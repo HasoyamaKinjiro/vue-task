@@ -1,58 +1,82 @@
-<!--<template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+<template>
+    <div class="movie-sessions">
+        <h2>Movie Sessions</h2>
+        <label for="sessionDate">Select Date:</label>
+        <select id="sessionDate" v-model="selectedDate">
+            <option v-for="session in sessions" :key="session.showdate" :value="session.showdate">{{ session.showdate }}</option>
+        </select>
+        <div v-if="selectedDate">
+            <ul>
+                <li v-for="session in sessions.find(s => s.showdate === selectedDate).daytime" :key="session" class="session-item">
+                    {{ session }}
+                    <button @click="bookTicket(selectedDate, session)">Book Ticket</button>
+                </li>
+            </ul>
+        </div>
+        <p v-else>No sessions available for selected date</p>
+    </div>
 </template>
 
 <script>
+import { fetchMovieSessions } from '@/services/cinema-api';
+
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+    name: 'MovieSessions',
+    props: {
+        movieId: {
+            type: Number,
+            required: true
+        }
+    },
+    data() {
+        return {
+            sessions: [],
+            selectedDate: ''
+        };
+    },
+    async mounted() {
+        await this.fetchSessions();
+    },
+    methods: {
+        async fetchSessions() {
+            try {
+                const response = await fetchMovieSessions(this.movieId);
+                this.sessions = response;
+                if (this.sessions.length) {
+                    this.selectedDate = this.sessions[0].showdate;
+                }
+            } catch (error) {
+                console.error('Error fetching movie sessions:', error);
+            }
+        },
+        async bookTicket(showDate, time) {
+            console.log('Booking ticket for:', showDate, time);
+        }
+    }
+};
 </script>
 
-&lt;!&ndash; Add "scoped" attribute to limit CSS to this component only &ndash;&gt;
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.movie-sessions {
+    margin: 20px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+.session-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.session-item button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
-a {
-  color: #42b983;
+.session-item button:hover {
+    background-color: #0056b3;
 }
-</style>-->
+</style>
