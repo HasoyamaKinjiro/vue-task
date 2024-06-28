@@ -33,3 +33,13 @@ export async function fetchShowPlaces(movieId, showDate, daytime) {
         throw error;
     }
 }
+
+export async function bookPlace(data) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/bookPlace`, data);
+        return response.data;
+    } catch (error) {
+        console.error('Error booking place:', error);
+        throw error;
+    }
+}

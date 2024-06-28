@@ -9,19 +9,30 @@
             <ul class="session-list">
                 <li v-for="time in getSessionTimes(selectedDate)" :key="time" class="session-item">
                     {{ time }}
-                    <button @click="bookTicket(selectedDate, time)">Book Ticket</button>
+                    <button @click="openBookingPopup(selectedDate, time)">Book Ticket</button>
                 </li>
             </ul>
         </div>
         <p v-else>No sessions available for selected date</p>
     </div>
+    <book-ticket
+        v-if="isPopupVisible"
+        :movie-id="movieId"
+        :show-date="selectedDate"
+        :time="selectedTime"
+        @close="isPopupVisible = false"
+    />
 </template>
 
 <script>
 import { fetchMovieSessions } from '@/services/cinema-api';
+import BookTicket from './BookTicket.vue';
 
 export default {
     name: 'MovieSessions',
+    components: {
+        BookTicket
+    },
     props: {
         movieId: {
             type: Number,
@@ -31,7 +42,9 @@ export default {
     data() {
         return {
             sessions: [],
-            selectedDate: ''
+            selectedDate: '',
+            isPopupVisible: false,
+            selectedTime: ''
         };
     },
     async mounted() {
@@ -53,8 +66,9 @@ export default {
             const session = this.sessions.find(s => s.showdate === showdate);
             return session ? session.daytime.split(';') : [];
         },
-        bookTicket(showDate, time) {
-            console.log('Booking ticket for:', showDate, time);
+        openBookingPopup(showDate, time) {
+            this.selectedTime = time;
+            this.isPopupVisible = true;
         }
     }
 };
@@ -119,6 +133,7 @@ export default {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    user-select: none;
 }
 .session-item button:hover {
     background-color: #0056b3;

@@ -110,6 +110,7 @@ export default {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    user-select: none;
 }
 
 .form-button:hover {
