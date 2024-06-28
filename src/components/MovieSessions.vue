@@ -1,15 +1,15 @@
 <template>
     <div class="movie-sessions">
         <h2>Movie Sessions</h2>
-        <label for="sessionDate">Select Date:</label>
-        <select id="sessionDate" v-model="selectedDate">
+        <h4>Select Date:</h4>
+        <select id="sessionDate" v-model="selectedDate" class="session-select">
             <option v-for="session in sessions" :key="session.showdate" :value="session.showdate">{{ session.showdate }}</option>
         </select>
         <div v-if="selectedDate">
-            <ul>
-                <li v-for="session in sessions.find(s => s.showdate === selectedDate).daytime" :key="session" class="session-item">
-                    {{ session }}
-                    <button @click="bookTicket(selectedDate, session)">Book Ticket</button>
+            <ul class="session-list">
+                <li v-for="time in getSessionTimes(selectedDate)" :key="time" class="session-item">
+                    {{ time }}
+                    <button @click="bookTicket(selectedDate, time)">Book Ticket</button>
                 </li>
             </ul>
         </div>
@@ -41,7 +41,7 @@ export default {
         async fetchSessions() {
             try {
                 const response = await fetchMovieSessions(this.movieId);
-                this.sessions = response;
+                this.sessions = response.data[this.movieId];
                 if (this.sessions.length) {
                     this.selectedDate = this.sessions[0].showdate;
                 }
@@ -49,7 +49,11 @@ export default {
                 console.error('Error fetching movie sessions:', error);
             }
         },
-        async bookTicket(showDate, time) {
+        getSessionTimes(showdate) {
+            const session = this.sessions.find(s => s.showdate === showdate);
+            return session ? session.daytime.split(';') : [];
+        },
+        bookTicket(showDate, time) {
             console.log('Booking ticket for:', showDate, time);
         }
     }
@@ -58,11 +62,51 @@ export default {
 
 <style scoped>
 .movie-sessions {
-    margin: 20px;
-}
-.session-item {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    border-radius: 8px;
     padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.session-select {
+    padding: 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #333;
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+.session-select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.session-select option {
+    padding: 10px;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.session-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.session-item {
+    width: fit-content;
+    margin-bottom: 10px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
     background-color: #f0f0f0;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -78,5 +122,11 @@ export default {
 }
 .session-item button:hover {
     background-color: #0056b3;
+}
+
+@media (max-width: 500px) {
+    .movie-sessions {
+        margin: 20px 0 0 0;
+    }
 }
 </style>

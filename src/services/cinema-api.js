@@ -14,7 +14,7 @@ export async function fetchMovies(params = {}) {
 
 export async function fetchMovieSessions(movieId) {
     try {
-        const response = await axios.get(`${API_BASE_URL}/showPlaces`, { params: { movie_id: movieId } });
+        const response = await axios.get(`${API_BASE_URL}/movieShows?movie_id=${movieId}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching movie sessions:', error);
