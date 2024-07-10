@@ -18,13 +18,13 @@ const routes = [
     },
     {
         path: '/education',
-        name: 'MovieDetails',
+        name: 'EducationPage',
         component: EducationPage,
         props: true
     },
     {
         path: '/education/form',
-        name: 'MovieDetails',
+        name: 'EducationForm',
         component: EducationForm,
         props: true
     }

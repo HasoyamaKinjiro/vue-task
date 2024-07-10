@@ -1,5 +1,5 @@
 <script setup>
-import EducationComponent from '@/components/EducationComponent.vue';
+import EducationComponent from '@/components/EducationComponent';
 </script>
 
 <template>
