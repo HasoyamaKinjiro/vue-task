@@ -3,6 +3,7 @@ import HomePage from '@/views/HomePage.vue';
 import MovieDetails from '@/views/MovieDetails.vue';
 import EducationPage from '@/views/EducationPage.vue';
 import EducationForm from '@/views/EducationForm.vue';
+import EducationRegister from '@/views/EducationRegister.vue';
 
 const routes = [
     {
@@ -26,6 +27,12 @@ const routes = [
         path: '/education/form',
         name: 'EducationForm',
         component: EducationForm,
+        props: true
+    },
+    {
+        path: '/education/register',
+        name: 'EducationRegister',
+        component: EducationRegister,
         props: true
     }
 ];

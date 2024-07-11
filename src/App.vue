@@ -1,11 +1,16 @@
-<template>
-    <div id="app">
-        <router-view />
-    </div>
-</template>
-
 <script>
+import GlobalLayout from '@/components/GlobalLayout';
+
 export default {
-    name: 'App'
+    name: 'App',
+    components: { GlobalLayout }
 };
 </script>
+
+<template>
+    <GlobalLayout>
+        <div id="app">
+            <router-view />
+        </div>
+    </GlobalLayout>
+</template>
