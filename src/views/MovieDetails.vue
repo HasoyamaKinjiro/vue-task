@@ -1,7 +1,7 @@
 <template>
     <div class="movie-details" v-if="movie">
         <div class="header-group">
-            <h1 class="movie-name">{{ movie.name }}</h1>
+            <h1 class="movie-name" v-html="movie.name"></h1>
             <div class="second-block">
                 <img :src="movie.image" alt="Movie Poster" class="movie-poster">
                 <movie-sessions :movie-id="movie.id"/>
